@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 # Load environment variables from env/.env
 load_dotenv(dotenv_path="env/.env")
 
+# Get DB credentials from .env
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -28,3 +29,4 @@ def get_db():
         yield db
     finally:
         db.close()
+
