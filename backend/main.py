@@ -13,7 +13,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # allow frontend access
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -99,6 +99,7 @@ def upload_video(file: UploadFile = File(...), db: Session = Depends(get_db)):
     file_path = os.path.join(VIDEO_DIR, file.filename)
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+    # Only add to DB if not already present
     if not db.query(Video).filter(Video.filename == file.filename).first():
         db.add(Video(title=file.filename, filename=file.filename))
         db.commit()
@@ -142,4 +143,5 @@ def update_score(
     user.score = score
     user.questions_answered = questions_answered
     db.commit()
-    return {"message": "Score updated"}
+    return {"message": "Score updated successfully"}
+
