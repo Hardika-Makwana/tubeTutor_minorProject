@@ -6,6 +6,7 @@ const API = axios.create({
 
 export const getVideos = () => API.get('/videos');
 export const getTranscript = (videoName) => API.get(`/video/${videoName}`);
-export const uploadVideo = (formData) => API.post('/upload_video/', formData, {
-  headers: { 'Content-Type': 'multipart/form-data' }
-});
+export const uploadVideo = (formData) =>
+  API.post('/upload_video/', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });

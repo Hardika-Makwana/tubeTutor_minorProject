@@ -1,30 +1,24 @@
-import { useEffect, useState } from "react";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './pages/Login.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import Admin from './pages/Admin.jsx';
 
 function App() {
-  const [videos, setVideos] = useState([]);
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/videos")
-      .then(res => res.json())
-      .then(data => setVideos(data));
-  }, []);
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">TubeTutor - Transcript Files</h1>
-      {videos.length === 0 ? (
-        <p>No transcripts found</p>
-      ) : (
-        <ul className="list-disc pl-6">
-          {videos.map((v, i) => (
-            <li key={i}>{v}</li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
+
+
 
 
