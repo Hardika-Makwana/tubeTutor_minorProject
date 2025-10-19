@@ -1,10 +1,6 @@
-# Python virtual environment
-venv/
+# Python environment
+backend/venv/
 
-# Uploaded videos
-uploaded_videos/
-videos/
-
-# OS files
-*.DS_Store
-Thumbs.db
+# Videos
+backend/uploaded_videos/
+backend/videos/
