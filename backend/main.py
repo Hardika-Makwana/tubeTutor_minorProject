@@ -1,12 +1,6 @@
-from fastapi import FastAPI, Depends, UploadFile, File
-from sqlalchemy.orm import Session
-from database import get_db
-from models import TranscriptCheckpoint  # your existing model
+from fastapi import FastAPI, UploadFile, File
 import os
 import shutil
-
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -14,13 +8,11 @@ app = FastAPI()
 # Allow CORS for all origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],  
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],  
+    allow_headers=["*"],  
 )
-
-
 
 # --------------------------
 # Folders
@@ -33,20 +25,22 @@ os.makedirs(VIDEO_DIR, exist_ok=True)
 # Transcript Endpoints
 # --------------------------
 @app.get("/videos")
-def list_videos(db: Session = Depends(get_db)):
-    """List all videos based on transcripts in DB."""
-    videos = db.query(TranscriptCheckpoint.video_name).distinct().all()
-    return [v[0] for v in videos]
+def list_videos():
+    """Return a hardcoded list for frontend testing."""
+    # Replace with DB query when DB is ready:
+    # from database import get_db
+    # from models import TranscriptCheckpoint
+    # videos = db.query(TranscriptCheckpoint.video_name).distinct().all()
+    # return [v[0] for v in videos]
+    return ["video1.txt", "video2.txt"]
 
 @app.get("/video/{video_name}")
-def get_checkpoints(video_name: str, db: Session = Depends(get_db)):
-    """Get all transcript checkpoints for a video."""
-    checkpoints = db.query(TranscriptCheckpoint).filter(
-        TranscriptCheckpoint.video_name == video_name
-    ).all()
+def get_checkpoints(video_name: str):
+    """Return dummy checkpoints for testing."""
+    # Replace with DB query when DB is ready
     return [
-        {"index": c.checkpoint_index, "text": c.text}
-        for c in checkpoints
+        {"index": 0, "text": f"Sample transcript for {video_name} - checkpoint 0"},
+        {"index": 1, "text": f"Sample transcript for {video_name} - checkpoint 1"},
     ]
 
 # --------------------------
