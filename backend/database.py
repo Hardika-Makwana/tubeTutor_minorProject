@@ -6,23 +6,23 @@ from sqlalchemy.orm import sessionmaker, relationship
 from dotenv import load_dotenv
 
 # ---------------------- Load environment variables ----------------------
-load_dotenv(dotenv_path="env/.env")
+load_dotenv(dotenv_path="env/.env")  # Ensure you have env/.env
 
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME", "tubetutor_db")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "5432")
 
 # ---------------------- Database URL ----------------------
 DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # ---------------------- SQLAlchemy Setup ----------------------
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, echo=True)  # echo=True logs SQL queries
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# ---------------------- Dependency ----------------------
+# ---------------------- Dependency for FastAPI ----------------------
 def get_db():
     db = SessionLocal()
     try:
@@ -35,14 +35,14 @@ class Admin(Base):
     __tablename__ = "admins"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
 
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
     score = Column(Integer, default=0)
     questions_answered = Column(Integer, default=0)
 
@@ -54,7 +54,7 @@ class Video(Base):
     uploaded_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     # One-to-many relationship with Transcript
-    transcripts = relationship("Transcript", back_populates="video", cascade="all, delete")
+    transcripts = relationship("Transcript", back_populates="video", cascade="all, delete-orphan")
 
 class Transcript(Base):
     __tablename__ = "transcripts"
@@ -67,4 +67,12 @@ class Transcript(Base):
     video = relationship("Video", back_populates="transcripts")
 
 # ---------------------- Create Tables ----------------------
-Base.metadata.create_all(bind=engine)
+def init_db():
+    Base.metadata.create_all(bind=engine)
+
+# Optional: Initialize DB automatically if run as main
+if __name__ == "__main__":
+    init_db()
+    print("Database tables created successfully.")
+
+
