@@ -7,17 +7,24 @@ export default function Dashboard() {
   const [checkpoints, setCheckpoints] = useState([]);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/videos")
+    const token = localStorage.getItem("token");
+    axios.get("http://127.0.0.1:8000/videos", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => setVideos(res.data))
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
   }, []);
 
   const fetchCheckpoints = (video) => {
-    axios.get(`http://127.0.0.1:8000/transcript/${video.id}`)
+    const token = localStorage.getItem("token");
+    axios.get(`http://127.0.0.1:8000/transcript/${video.id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => {
         setCheckpoints(res.data.text.split("\n").map((t,i)=>({index:i,text:t})));
         setSelectedVideo(video.title);
-      });
+      })
+      .catch(err => console.error(err));
   };
 
   return (
@@ -42,6 +49,7 @@ export default function Dashboard() {
     </div>
   );
 }
+
 
 
 
