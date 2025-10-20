@@ -6,7 +6,27 @@ from transformers import pipeline
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from database import get_db, init_db, Admin, User, Video, Transcript, UserAnswer
 from dotenv import load_dotenv
-import hashlib
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# Allow your frontend to communicate with backend
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,      # Frontend origins
+    allow_credentials=True,
+    allow_methods=["*"],        # Allow GET, POST, etc.
+    allow_headers=["*"],        # Allow all headers
+)
+
+
+
 
 # ---------------------- Load env ----------------------
 load_dotenv(dotenv_path="env/.env")
