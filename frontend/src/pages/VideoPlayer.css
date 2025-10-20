@@ -1,0 +1,18 @@
+.video-player-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.summary-section, .questions-section {
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.questions-section input {
+  display: block;
+  margin: 5px 0 15px 0;
+  padding: 8px;
+  border-radius: 5px;
+  width: 100%;
+}
