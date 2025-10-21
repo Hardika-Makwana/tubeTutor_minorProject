@@ -221,9 +221,18 @@ def submit_answers(user_id: int, video_id: int, checkpoint_index: int, answers: 
     return {"results": results, "score": user.score, "questions_answered": user.questions_answered}
 
 # ---------------------- Run DB Init ----------------------
+import os
+import uvicorn
+
+# ---------------------- Run DB Init ----------------------
 if __name__ == "__main__":
     init_db()
     print("Database tables ensured.")
+
+    # Get Render's port or default to 8000
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+
 
 
 
