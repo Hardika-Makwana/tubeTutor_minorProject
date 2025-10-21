@@ -9,9 +9,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+# ---------------------- FastAPI app ----------------------
+app = FastAPI(title="TubeTutor API")
 
-# Allow your frontend to communicate with backend
+# ---------------------- CORS Middleware ----------------------
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -24,6 +25,8 @@ app.add_middleware(
     allow_methods=["*"],        # Allow GET, POST, etc.
     allow_headers=["*"],        # Allow all headers
 )
+
+
 
 
 
