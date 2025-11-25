@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player";
 import axios from "axios";
-import "./VideoPlayer.css"; // optional for extra styling
+import "./VideoPlayer.css";
 
 const VideoPlayer = ({ videoId, userId }) => {
   const playerRef = useRef(null);
@@ -13,11 +13,10 @@ const VideoPlayer = ({ videoId, userId }) => {
   const [userAnswers, setUserAnswers] = useState({});
   const [attempts, setAttempts] = useState(0);
 
-  // Fetch checkpoint summary and questions
   const fetchCheckpoint = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/checkpoint/${videoId}/${checkpointIndex}`
+        `http://127.0.0.1:8000/checkpoint/${videoId}/${checkpointIndex}`
       );
       setSummary(res.data.summary);
       setQuestions(res.data.questions);
@@ -31,23 +30,21 @@ const VideoPlayer = ({ videoId, userId }) => {
     fetchCheckpoint();
   }, [checkpointIndex]);
 
-  // Handle answer change
   const handleAnswerChange = (question, value) => {
     setUserAnswers({ ...userAnswers, [question]: value });
   };
 
-  // Submit answers
   const submitAnswers = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/submit_answers", {
+      const res = await axios.post("http://127.0.0.1:8000/submit_answers", {
         user_id: userId,
         video_id: videoId,
         checkpoint_index: checkpointIndex,
         answers: userAnswers,
       });
 
-      // If two wrong attempts, go to previous checkpoint
       const wrongAnswers = res.data.results.filter((r) => !r.is_correct);
+
       if (wrongAnswers.length >= 2 && checkpointIndex > 1) {
         setCheckpointIndex(checkpointIndex - 1);
         setAttempts(0);
@@ -68,7 +65,7 @@ const VideoPlayer = ({ videoId, userId }) => {
 
       <ReactPlayer
         ref={playerRef}
-        url={`http://localhost:8000/${videoData.filename}`}
+        url={videoData.video_path}
         controls
         width="100%"
         height="500px"
@@ -107,3 +104,4 @@ const VideoPlayer = ({ videoId, userId }) => {
 };
 
 export default VideoPlayer;
+
