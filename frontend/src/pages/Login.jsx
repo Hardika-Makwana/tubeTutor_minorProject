@@ -1,78 +1,110 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (role) => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      let url = role === "admin" 
-        ? "http://127.0.0.1:8000/admin/login" 
-        : "http://127.0.0.1:8000/user/login";
+      const url =
+        role === "admin"
+          ? "http://127.0.0.1:8000/login/admin"
+          : "http://127.0.0.1:8000/login/user";
 
-      const formData = new URLSearchParams();
-      formData.append("email", email);
-      formData.append("password", password);
+      const res = await axios.post(url, { email, password });
 
-      const res = await axios.post(url, formData, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
-
-      // Save token and role to localStorage
-      localStorage.setItem("token", res.data.access_token);
       localStorage.setItem("role", role);
+      localStorage.setItem("user_id", res.data.user_id || res.data.admin_id);
+      setMessage("✅ Login successful!");
 
-      setMessage("Login successful!");
-
-      // Redirect based on role
-      if (role === "admin") navigate("/admin");
-      else navigate("/dashboard");
+      setTimeout(() => {
+        navigate(role === "admin" ? "/admin" : "/dashboard");
+      }, 1000);
     } catch (err) {
-      console.error(err);
-      setMessage("Login failed. Check email/password.");
+      console.error("Login Error:", err);
+      setMessage("❌ Invalid email or password");
     }
   };
 
   return (
-    <div className="login-container">
-      <h1 style={{ color: "#7c3aed", marginBottom: "1.5rem" }}>Tube Tutor</h1>
-      <div className="card login-card">
-        <h2 style={{ textAlign: "center" }}>Login</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <div style={{ display: "flex", gap: "1rem" }}>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-white to-blue-100 p-6">
+      <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md border border-pink-200">
+        <h2 className="text-3xl font-bold text-center text-pink-600 mb-6">
+          🌸 Welcome Back
+        </h2>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Email</label>
+            <input
+              type="email"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Password</label>
+            <input
+              type="password"
+              className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex justify-center gap-6 mt-3">
+            <label className="text-gray-700 font-medium">
+              <input
+                type="radio"
+                name="role"
+                value="user"
+                checked={role === "user"}
+                onChange={() => setRole("user")}
+              />{" "}
+              User
+            </label>
+            <label className="text-gray-700 font-medium">
+              <input
+                type="radio"
+                name="role"
+                value="admin"
+                checked={role === "admin"}
+                onChange={() => setRole("admin")}
+              />{" "}
+              Admin
+            </label>
+          </div>
           <button
-            style={{ flex: 1, backgroundColor: "#7c3aed" }}
-            onClick={() => handleLogin("user")}
+            type="submit"
+            className="w-full bg-pink-500 text-white py-2 rounded-lg font-medium hover:bg-pink-600 transition-all duration-200"
           >
-            User
+            Login
           </button>
-          <button
-            style={{ flex: 1, backgroundColor: "#ec4899" }}
-            onClick={() => handleLogin("admin")}
-          >
-            Admin
-          </button>
-        </div>
-        {message && <p style={{ marginTop: "1rem", color: "green" }}>{message}</p>}
+          {message && (
+            <p className="text-center text-sm mt-2 text-gray-700">{message}</p>
+          )}
+        </form>
+        <p className="text-center text-sm mt-5 text-gray-600">
+          Don’t have an account?{" "}
+          <a href="/register" className="text-pink-500 hover:underline">
+            Register here
+          </a>
+        </p>
       </div>
     </div>
   );
 }
+
+
+
+
 
 
 
