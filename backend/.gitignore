@@ -1,5 +1,5 @@
 # Virtual environments
-venv/
+/venv/
 backend/venv/
 frontend/venv/
 
@@ -30,4 +30,5 @@ frontend/dist/
 
 # Logs
 *.log
+
 
