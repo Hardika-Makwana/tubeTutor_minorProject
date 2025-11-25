@@ -1,0 +1,34 @@
+venv/
+backend/venv/
+frontend/venv/
+
+# Environment variables
+.env
+backend/.env
+backend/env/
+backend/env/.env
+
+# Generated media
+backend/uploaded_videos/
+backend/videos/
+backend/thumbnails/
+
+# Python cache
+__pycache__/
+backend/__pycache__/
+frontend/__pycache__/
+
+# Node modules
+frontend/node_modules/
+
+# React build
+frontend/dist/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+
+
