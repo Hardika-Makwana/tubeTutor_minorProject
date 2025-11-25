@@ -1,6 +1,33 @@
-# Python environment
+# Virtual environments
+venv/
 backend/venv/
+frontend/venv/
 
-# Videos
+# Environment variables
+.env
+backend/.env
+backend/env/
+backend/env/.env
+
+# Uploaded or generated media
 backend/uploaded_videos/
 backend/videos/
+backend/thumbnails/
+
+# Python cache
+__pycache__/
+backend/__pycache__/
+frontend/__pycache__/
+
+# Node modules
+frontend/node_modules/
+
+# Build artifacts (React)
+frontend/dist/
+
+# VS Code settings
+.vscode/
+
+# Logs
+*.log
+
